@@ -99,18 +99,23 @@ public class VirtualMaterialHandler implements emEvolvableMotherboard.Iface {
 	 */
 	@Override
 	public void runSequences() throws emException, TException {
+        System.out.println("runSequences()");
 		VarElman net = (VarElman) vm;
 		int nInputs = net.getNumberOfInputs();
 		int nOutputs = net.getNumberOfOutputs();// should be the same as #
 
+        System.out.println("nInputs: " + nInputs);
+        System.out.println("nOutputs: " + nOutputs);
+
+
 		double[] rawOutput;
 		double[][] inputs = inputSequence.getAsArray(nInputs);
 		
-
 		double[][] outputs = new double[inputs.length][];
 		
 		inputSequence.updateUnusedPins(nInputs);
 		List<Integer> unusedPins = inputSequence.getUnusedInputPins(); // output pins
+        System.out.println("unusedPins: " + unusedPins);
 		
 		net.setOutputMaskIndices(nOutputs, unusedPins);
 

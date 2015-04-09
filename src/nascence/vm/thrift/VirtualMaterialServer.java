@@ -11,6 +11,8 @@ import org.apache.thrift.server.TSimpleServer;
 import org.apache.thrift.transport.TServerSocket;
 import org.apache.thrift.transport.TServerTransport;
 //import org.apache.thrift.transport.TSSLTransportFactory.TSSLTransportParameters;
+import java.nio.file.Files;
+import java.nio.file.FileSystems;
 
 
 import emInterfaces.emEvolvableMotherboard;
@@ -24,9 +26,26 @@ public class VirtualMaterialServer {
         public static int portNumber;
 
 	public static void main(String[] args) {
-		try {
 			VirtualMaterial vm = new VarElman(); // let's test with Elman RNN
+            //((VarElman) vm).genVarElmanRandom(8, 32, 8, 5.0, 0.5, false, true); // at random
+            /*
+            byte[] ar = local.serializeToByteArray(); // get the weights
+            */
+
+            String[] weightsAsString = new String[0];
+            try {
+                weightsAsString = new String(Files.readAllBytes(FileSystems.getDefault().getPath("", "weights.txt"))).split(", ");
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+            byte[] weights = new byte[weightsAsString.length];
+            for(int i = 0; i < weights.length; i++) { 
+                weights[i] = Byte.parseByte(weightsAsString[i].trim());
+            }
+
+            vm.programme(weights); // prg. the VM
 			
+		try {
 			handler = new VirtualMaterialHandler(vm);
 			processor = new emEvolvableMotherboard.Processor(handler);
 

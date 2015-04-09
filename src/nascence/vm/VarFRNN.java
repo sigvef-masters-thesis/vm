@@ -167,6 +167,9 @@ public class VarFRNN implements VirtualMaterial {
 	}
 
 	public void reset() {
+        if(state == null) {
+            return;
+        }
 		for (int i = 0; i < state.length; i++) {
 			state[i] = 0;
 		}

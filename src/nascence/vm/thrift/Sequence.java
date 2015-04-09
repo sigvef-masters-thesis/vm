@@ -61,11 +61,19 @@ public class Sequence {
 		for (emSequenceItem item : sequence) {
 			double amplitude = (double) item.getAmplitude();
 			int startTime = (int) item.getStartTime();
+            int endTime = (int) item.getEndTime();
 			List<Integer> pins = item.getPin();
 			double v;
 
 			int sampleIndex;
 			switch (item.getOperationType()) {
+            case CONSTANT:
+                for(int pin : pins) {
+                    for(int i = 0; i < (endTime - startTime); i++) {
+                        result[startTime + i][pin] = amplitude / 255.;
+                    }
+                }
+				break;
 			case ARBITRARY:
 				List<Integer> samples = item.getWaveForm().getSamples();
 				// there should be another check for the waveform types here
@@ -247,12 +255,23 @@ public class Sequence {
 		// VM stores the pins in order, it searches the first item
 		// it does not store values for multiple pins, so the first 
 		// pin is used
+        System.out.println("getRecording(pin: " + pin + ")");
+        /*
+        if(pin == 0) {
+            throw new RuntimeException("Pins are 1-indexed, don't try to access pin 0.");
+        }
+        */
 		int pinIndex = 0;
 		int nItems = sequence.size();
-		while (pin != (sequence.get(pinIndex)).getPin().get(0)
-				&& pinIndex < nItems) {
+
+		while (pinIndex < nItems && pin != (sequence.get(pinIndex)).getPin().get(0)) {
+            System.out.println("Searching for pin " + pin + ", this is " + sequence.get(pinIndex).getPin());
 			pinIndex++;
 		}
+
+        if(pinIndex == nItems) {
+            throw new RuntimeException("Could not find the proper pin!");
+        }
 		
 		emSequenceItem item = sequence.get(pinIndex);
 		return item.getWaveForm();

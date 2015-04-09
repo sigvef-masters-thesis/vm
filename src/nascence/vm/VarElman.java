@@ -142,7 +142,9 @@ public class VarElman extends VirtualMaterialImpl implements VirtualMaterial {
 	}
 
 	public void reset() {
-		varFRNN.reset();
+        if(varFRNN != null) {
+            varFRNN.reset();
+        }
 		outputBuffer = new double[wOut.length];
 	}
 
